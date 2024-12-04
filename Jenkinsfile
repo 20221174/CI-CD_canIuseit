@@ -72,8 +72,12 @@ pipeline {
                 script {
                     // GKE 인증 설정
                     withCredentials([file(credentialsId: 'kube-config', variable: 'KUBE_CONFIG_FILE')]) {
-                        sh 'export KUBECONFIG=$KUBE_CONFIG_FILE'
-                        sh 'kubectl apply -f deployment.yaml'  // 배포 파일을 사용하여 업데이트
+                        sh ''' 
+                        export KUBECONFIG=$KUBE_CONFIG_FILE
+                        gcloud auth activate-service-account --key-file=${KUBE_CONFIG_FILE}
+                        gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${LOCATION} --project ${PROJECT_ID}
+                        sh kubectl apply -f deployment.yaml
+                        '''
                     }
                 }
             }
