@@ -34,7 +34,7 @@
 
 /* 소비기한 계산하기 버튼 스타일 */
 .calculate-button .btn-primary {
-  background-color: yellow; /* 버튼 배경색 */
+  background-color: red; /* 버튼 배경색 */
   color: white; /* 버튼 텍스트 색상 */
   font-weight: bold; /* 텍스트 굵기 */
   padding: 15px 30px; /* 버튼의 내부 여백 */
