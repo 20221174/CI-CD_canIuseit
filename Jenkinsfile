@@ -70,10 +70,14 @@ pipeline {
         stage('Deploy to GKE') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: env.CREDENTIALS_ID, variable: 'KUBE_CONFIG')]) {
+                    withCredentials([file(credentialsId: 'mygke', variable: 'GCLOUD_KEY_FILE')]) {
                         sh '''
-                        # Kubeconfig 설정
-                        export KUBECONFIG=$KUBE_CONFIG
+                        # Google Cloud 인증
+                        gcloud auth activate-service-account --key-file=$GCLOUD_KEY_FILE
+                        gcloud config set project ${PROJECT_ID}
+
+                        # GKE 클러스터에 대한 kubeconfig 설정
+                        gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${LOCATION} --project ${PROJECT_ID}
 
                         # deployment.yaml 파일에서 이미지 태그를 동적으로 변경
                         sed -i 's|image: .*$|image: ${WEB_IMAGE_NAME}:${VERSION_TAG}|' deployment.yaml
