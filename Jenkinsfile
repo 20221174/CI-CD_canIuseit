@@ -76,8 +76,7 @@ pipeline {
                         export KUBECONFIG=$KUBE_CONFIG_FILE
                         gcloud auth activate-service-account --key-file=${KUBE_CONFIG_FILE}
                         gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${LOCATION} --project ${PROJECT_ID}
-                        ls
-                        sh kubectl apply -f deployment.yaml
+                        kubectl apply -f deployment.yaml
                         '''
                     }
                 }
