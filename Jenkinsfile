@@ -70,22 +70,19 @@ pipeline {
         stage('Deploy to GKE') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'mygke', variable: 'GCLOUD_KEY_FILE')]) {
-                        sh '''
-                        # Google Cloud 인증
-                        gcloud auth activate-service-account --key-file=$GCLOUD_KEY_FILE
-                        gcloud config set project ${PROJECT_ID}
-
-                        # GKE 클러스터에 대한 kubeconfig 설정
-                        gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${LOCATION} --project ${PROJECT_ID}
-
-                        # deployment.yaml 파일에서 이미지 태그를 동적으로 변경
-                        sed -i 's|image: .*$|image: ${WEB_IMAGE_NAME}:${VERSION_TAG}|' deployment.yaml
-
-                        # kubectl apply 명령어로 업데이트
-                        kubectl apply -f deployment.yaml
-                        '''
-                    }
+                    step([$class: 'KubernetesEngineBuilder', 
+                          projectId: env.PROJECT_ID, 
+                          clusterName: env.CLUSTER_NAME,
+                          location: env.LOCATION, 
+                          manifestPattern: 'deployment.yaml', 
+                          credentialsId: env.CREDENTIALS_ID,
+                          verifyDeployments: true])
+                    
+                    // kubectl apply로 배포 적용
+                    sh '''
+                    echo "Applying Kubernetes deployment..."
+                    kubectl apply -f deployment.yaml
+                    '''
                 }
             }
         }
