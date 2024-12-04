@@ -9,7 +9,7 @@ pipeline {
         PROJECT_ID = 'open-source-software-435607'
         CLUSTER_NAME = 'cluster'
         LOCATION = 'us-central1-c'
-        CREDENTIALS_ID = credentials('GKE_KEY_FILE')
+        KUBE_CONFIG = credentials('kube-config')
         DOCKER_HUB_CREDENTIALS = credentials('dockerhub')
     }
 
@@ -71,14 +71,9 @@ pipeline {
             steps {
                 script {
                     // GKE 인증 설정
-                    withCredentials([file(credentialsId: 'env.GKE_KEY_FILE', variable: 'GKE_KEY_FILE')]) {
-                        sh """
-                        gcloud auth activate-service-account --key-file=${GKE_KEY_FILE}
-                        gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${LOCATION} --project ${PROJECT_ID}
-                        """
-
-                        // kubectl apply로 매니페스트 배포
-                        sh 'kubectl apply -f deployment.yaml'
+                    withCredentials([file(credentialsId: 'kube-config', variable: 'KUBE_CONFIG_FILE')]) {
+                        sh 'export KUBECONFIG=$KUBE_CONFIG_FILE'
+                        sh 'kubectl apply -f deployment.yaml'  // 배포 파일을 사용하여 업데이트
                     }
                 }
             }
