@@ -30,16 +30,6 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image to Docker Hub') {
-            steps {
-                script {
-                    sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | docker login -u ${DOCKER_HUB_CREDENTIALS_USR} --password-stdin"
-                    sh 'docker push $WEB_IMAGE_NAME'
-                    sh 'docker logout'
-                }
-            }
-        }
-
         stage('Run Web Container') {
             steps {
                 script {
@@ -63,6 +53,16 @@ pipeline {
                         echo "Test failed! HTTP Status: $RESPONSE"
                     fi
                     '''
+                }
+            }
+        }
+
+         stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | docker login -u ${DOCKER_HUB_CREDENTIALS_USR} --password-stdin"
+                    sh 'docker push $WEB_IMAGE_NAME'
+                    sh 'docker logout'
                 }
             }
         }
