@@ -70,13 +70,17 @@ pipeline {
         stage('Deploy to GKE') {
             steps {
                 script {
-                    step([$class: 'KubernetesEngineBuilder', 
-                          projectId: env.PROJECT_ID, 
-                          clusterName: env.CLUSTER_NAME,
-                          location: env.LOCATION, 
-                          manifestPattern: 'deployment.yaml', 
-                          credentialsId: env.CREDENTIALS_ID,
-                          verifyDeployments: true])
+                    withCredentials([file(credentialsId: env.CREDENTIALS_ID, variable: 'KUBE_CONFIG')]) {
+                        sh '''
+                        # Kubeconfig 설정
+                        export KUBECONFIG=$KUBE_CONFIG
+
+                        # deployment.yaml 파일에서 이미지 태그를 동적으로 변경
+                        sed -i 's|image: .*$|image: ${WEB_IMAGE_NAME}:${VERSION_TAG}|' deployment.yaml
+
+                        # kubectl apply 명령어로 업데이트
+                        kubectl apply -f deployment.yaml
+                        '''
                 }
             }
         }
