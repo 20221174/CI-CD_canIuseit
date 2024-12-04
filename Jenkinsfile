@@ -71,7 +71,7 @@ pipeline {
             steps {
                 script {
                     // GKE 인증 설정
-                    withCredentials([file(credentialsId: 'CREDENTIALS_ID', variable: 'GKE_KEY_FILE')]) {
+                    withCredentials([file(credentialsId: 'env.CREDENTIALS_ID', variable: 'GKE_KEY_FILE')]) {
                         sh """
                         gcloud auth activate-service-account --key-file=${GKE_KEY_FILE}
                         gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${LOCATION} --project ${PROJECT_ID}
