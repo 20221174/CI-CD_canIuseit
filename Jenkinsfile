@@ -70,24 +70,19 @@ pipeline {
         stage('Deploy to GKE') {
             steps {
                 script {
-                    step([$class: 'KubernetesEngineBuilder', 
-                          projectId: env.PROJECT_ID, 
-                          clusterName: env.CLUSTER_NAME,
-                          location: env.LOCATION, 
-                          manifestPattern: 'deployment.yaml', 
-                          credentialsId: env.CREDENTIALS_ID,
-                          verifyDeployments: true])
-                    
-                    // kubectl apply로 배포 적용
-                    sh '''
-                    echo "Applying Kubernetes deployment..."
-                    sudo kubectl apply -f deployment.yaml
-                    '''
+                    withCredentials([file(credentialsId: 'your-credentials-id', variable: 'GKE_KEY_FILE')]) {
+                        sh """
+                        gcloud auth activate-service-account --key-file=${mygke}
+                        gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${LOCATION} --project ${PROJECT_ID}
+                        """
+
+                        // kubectl apply로 매니페스트 배포
+                        sh 'kubectl apply -f deployment.yaml'
+                    }
                 }
             }
         }
-    }
-
+    
     post {
         always {
             echo 'Cleaning up Docker resources...'
