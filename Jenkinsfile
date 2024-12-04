@@ -81,7 +81,7 @@ pipeline {
                     // kubectl apply로 배포 적용
                     sh '''
                     echo "Applying Kubernetes deployment..."
-                    kubectl apply -f deployment.yaml
+                    sudo kubectl apply -f deployment.yaml
                     '''
                 }
             }
