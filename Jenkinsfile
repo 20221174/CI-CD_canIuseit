@@ -9,7 +9,7 @@ pipeline {
         PROJECT_ID = 'open-source-software-435607'
         CLUSTER_NAME = 'cluster'
         LOCATION = 'us-central1-c'
-        CREDENTIALS_ID = 'mygke'
+        CREDENTIALS_ID = 'MY_GKE_FILE'
         DOCKER_HUB_CREDENTIALS = credentials('dockerhub')
     }
 
@@ -71,7 +71,7 @@ pipeline {
             steps {
                 script {
                     // GKE 인증 설정
-                    withCredentials([file(credentialsId: 'mygke', variable: 'GKE_KEY_FILE')]) {
+                    withCredentials([file(credentialsId: 'MY_GKE_FILE', variable: 'GKE_KEY_FILE')]) {
                         sh """
                         gcloud auth activate-service-account --key-file=${GKE_KEY_FILE}
                         gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${LOCATION} --project ${PROJECT_ID}
