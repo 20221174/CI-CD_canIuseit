@@ -9,7 +9,7 @@ pipeline {
         PROJECT_ID = 'open-source-software-435607'
         CLUSTER_NAME = 'cluster'
         LOCATION = 'us-central1-c'
-        CREDENTIALS_ID = '26cd93203d47f160cdbfffb18ce262db78e96d10'
+        CREDENTIALS_ID = credentials('MY_GKE_FILE')
         DOCKER_HUB_CREDENTIALS = credentials('dockerhub')
     }
 
