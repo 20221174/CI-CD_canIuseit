@@ -10,7 +10,7 @@ pipeline {
         CLUSTER_NAME = 'cluster'
         LOCATION = 'us-central1-c'
         CREDENTIALS_ID = 'mygke'
-        DOCKER_HUB_CREDENTIALS = credentials('dockerhub') 
+        DOCKER_HUB_CREDENTIALS = credentials('dockerhub')
     }
 
     stages {
@@ -57,7 +57,7 @@ pipeline {
             }
         }
 
-         stage('Push Docker Image to Docker Hub') {
+        stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
                     sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | docker login -u ${DOCKER_HUB_CREDENTIALS_USR} --password-stdin"
@@ -70,9 +70,10 @@ pipeline {
         stage('Deploy to GKE') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'your-credentials-id', variable: 'GKE_KEY_FILE')]) {
+                    // GKE 인증 설정
+                    withCredentials([file(credentialsId: 'mygke', variable: 'GKE_KEY_FILE')]) {
                         sh """
-                        gcloud auth activate-service-account --key-file=${mygke}
+                        gcloud auth activate-service-account --key-file=${GKE_KEY_FILE}
                         gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${LOCATION} --project ${PROJECT_ID}
                         """
 
@@ -82,7 +83,8 @@ pipeline {
                 }
             }
         }
-    
+    }
+
     post {
         always {
             echo 'Cleaning up Docker resources...'
@@ -93,5 +95,4 @@ pipeline {
             '''
         }
     }
-}
 }
