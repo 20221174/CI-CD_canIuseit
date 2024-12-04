@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: web-container
-        image: 20221174/ci-cd:latest
+        image: 20221174/ci-cd:{{IMAGE_TAG}}
         ports:
         - containerPort: 3000
         command: ["node", "index.js"]
