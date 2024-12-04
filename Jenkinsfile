@@ -81,6 +81,7 @@ pipeline {
                         # kubectl apply 명령어로 업데이트
                         kubectl apply -f deployment.yaml
                         '''
+                    }
                 }
             }
         }
