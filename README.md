@@ -4,6 +4,13 @@ project - can I use it ?
 
 <br/>
 
+# 시연 영상
+[시연 영상 1](https://youtu.be/lgLnvRLSWRs)
+<br />
+[시연 영상 2](https://youtu.be/ILNLP22bFAo)
+
+<br />
+
 # 준비 사항
 - 데이터베이스 컨테이너와 디플로이먼트, 서비스가 필요합니다.
   - 각 컨테이너와 디플로이먼트에는 MYSQL_ROOT_PASSWORD=cancanii!와 MYSQL_DATABASE=canIuseit_db로 설정되어야 합니다.
